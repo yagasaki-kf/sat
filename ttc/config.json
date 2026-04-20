@@ -1,0 +1,32 @@
+{
+  "picos": [
+    {
+      "name": "Pico-A",
+      "control_port": "",
+      "monitor_port": "",
+      "baudrate": 115200,
+      "drivers": [
+        {
+          "name": "Stage-X"
+        },
+        {
+          "name": "Stage-Y"
+        }
+      ]
+    },
+    {
+      "name": "Pico-B",
+      "control_port": "",
+      "monitor_port": "",
+      "baudrate": 115200,
+      "drivers": [
+        {
+          "name": "Stage-Z"
+        },
+        {
+          "name": "Stage-R"
+        }
+      ]
+    }
+  ]
+}
