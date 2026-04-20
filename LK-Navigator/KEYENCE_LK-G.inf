@@ -1,0 +1,113 @@
+;/*++
+;
+;Copyright (c) KEYENCE Corporation.  All rights reserved.
+;
+;Module Name:
+;
+;	KEYENCE_LK-G.INF
+;
+;Abstract:
+;	KEYENCE KMDF USB driver for Windows 2000,XP,Vista
+;
+;--*/
+
+[Version]
+Signature	= "$WINDOWS NT$"
+Class		= KeyenceUSB
+ClassGuid	= {71F238A1-4065-4730-B053-0ADB085CB899}
+Provider	= %KeyenceMfg%
+CatalogFile	= KEYENCE_LK-G.cat
+DriverVer=03/28/2007,1.4.0000.0
+
+; ================= Class section =====================
+
+[ClassInstall32]
+Addreg=KeyenceClassReg
+
+[KeyenceClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+; ================= Device section =====================
+
+[Manufacturer]
+%MfgName%	= KEYENCE,NTAMD64
+
+; For Win2K
+[KEYENCE]
+%USB\VID_0720&PID_000A.DeviceDesc%=KEYENCE_LK-G.Dev, USB\VID_0720&PID_000A	; KEYENCE_LK-G
+
+; For XP and later
+[KEYENCE.NTAMD64]
+%USB\VID_0720&PID_000A.DeviceDesc%=KEYENCE_LK-G.Dev, USB\VID_0720&PID_000A	; KEYENCE_LK-G
+
+
+[KEYENCE_LK-G.Dev.NT]
+CopyFiles=KEYENCE_LK-G.Files.Ext
+
+[KEYENCE_LK-G.Dev.NT.Services]
+Addservice = KEYENCE_LK-G, 0x00000002, KEYENCE_LK-G.AddService
+
+[KEYENCE_LK-G.AddService]
+DisplayName    = %KEYENCE_LK-G.SvcDesc%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %10%\System32\Drivers\KEYENCE_LK-G.sys
+AddReg         = KEYENCE_LK-G.AddReg
+LoadOrderGroup = Base
+
+[KEYENCE_LK-G.AddReg]
+HKR,"Parameters","MaximumTransferSize",0x10001,65536
+HKR,"Parameters","DebugLevel",0x10001,2
+HKR, Parameters\Wdf, VerboseOn,       0x00010001, 1
+HKR, Parameters\Wdf, VerifierOn,      0x00010001, 1
+HKR, Parameters\Wdf, DbgBreakOnError, 0x00010001, 1
+
+[KEYENCE_LK-G.Files.Ext]
+KEYENCE_LK-G.sys
+
+[SourceDisksNames]
+1=%Disk_Description%,,,
+
+[SourceDisksFiles]
+KEYENCE_LK-G.sys = 1
+
+;-------------- WDF Coinstaller installation
+[DestinationDirs]
+CoInstaller_CopyFiles = 11
+
+[KEYENCE_LK-G.Dev.NT.CoInstallers]
+AddReg=CoInstaller_AddReg
+CopyFiles=CoInstaller_CopyFiles
+
+[CoInstaller_CopyFiles]
+wdfcoinstaller01005.dll
+
+[SourceDisksFiles]
+wdfcoinstaller01005.dll=1 ; make sure the number matches with SourceDisksNames
+
+[CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "wdfcoinstaller01005.dll,WdfCoInstaller"
+
+[KEYENCE_LK-G.Dev.NT.Wdf]
+KmdfService = KEYENCE_LK-G, KEYENCE_LK-G_wdfsect
+
+[KEYENCE_LK-G_wdfsect]
+KmdfLibraryVersion = 1.5
+
+;---------------------------------------------------------------;
+
+[Strings]
+KeyenceMfg			= "KEYENCE"
+MfgName				= "KEYENCE"
+
+Disk_Description		= "KEYENCE USB Driver Installation Disk"
+KEYENCE_LK-G.SvcDesc		= "KEYENCE_LK-G.sys : WDF Driver for KEYENCE USB Device"
+ClassName			= "KEYENCE USB Device Class"
+
+USB\VID_0720&PID_000A.DeviceDesc="WDF USB for KEYENCE LK-G"
+
